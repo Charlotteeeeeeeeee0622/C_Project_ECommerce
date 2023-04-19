@@ -3,13 +3,17 @@ import axios from 'axios';
 import { Form, Input, Button, message } from 'antd';
 import { Link } from 'react-router-dom';
 
+const axiosInstance = axios.create({
+  baseURL: 'http://localhost:3002',
+});
+
 const UpdatePasswordPage = ({ onLogout }) => {
   const [isLoading, setIsLoading] = useState(false);
 
   const handleUpdatePassword = async (values) => {
     setIsLoading(true);
     try {
-      const response = await axios.put('/update-password', values);
+      const response = await axiosInstance.put('/update-password', values);
 
       if (response.status === 200) {
         // Display success message and clear form
@@ -22,7 +26,11 @@ const UpdatePasswordPage = ({ onLogout }) => {
         console.error('Password update failed:', response.data.message);
       }
     } catch (error) {
-      console.error('Error updating password:', error);
+      if (error.response) {
+        message.error(error.response.data.message);
+      } else {
+        console.error('Error updating password:', error);
+      }
     } finally {
       setIsLoading(false);
     }
@@ -30,8 +38,8 @@ const UpdatePasswordPage = ({ onLogout }) => {
 
   const formFields = [
     {
-      label: 'User ID',
-      name: 'userId',
+      label: 'Email',
+      name: 'email',
       rules: [{ required: true, message: 'Please enter your user ID' }],
       type: 'text',
     },
@@ -46,7 +54,7 @@ const UpdatePasswordPage = ({ onLogout }) => {
       name: 'newPassword',
       rules: [
         { required: true, message: 'Please enter your new password' },
-        { min: 8, message: 'Password must be at least 8 characters long' },
+        { min: 6, message: 'Password must be at least 8 characters long' },
       ],
       type: 'password',
     },
@@ -67,7 +75,6 @@ const UpdatePasswordPage = ({ onLogout }) => {
       type: 'password',
     },
   ];
-  
 
   const [form] = Form.useForm();
 
@@ -86,7 +93,7 @@ const UpdatePasswordPage = ({ onLogout }) => {
           </Button>
         </Form.Item>
         <Form.Item>
-          <Link to="/Login"><Button onClick={onLogout}>Logout</Button></Link>
+          <Link to="/"><Button onClick={onLogout}>Logout</Button></Link>
           </Form.Item>
       </Form>
     </div>

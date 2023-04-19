@@ -8,6 +8,7 @@ import LoginPage from './pages/LoginPage';
 import SignUpPage from './pages/SignUpPage';
 import UpdatePasswordPage from './pages/UpdatePasswordPage';
 import Home from './pages/Home'
+import ProductsListPage from './pages/ProductListPage';
 // import ProductsPage from './ProductsPage';
 // import axios from 'axios';
 
@@ -20,7 +21,8 @@ const App = () => {
         <Content>
         <Routes>
             <Route exact path="/" element={<Home />} />
-            <Route exact path="/login" element={<LoginPage />} />
+            <Route exact path="/products" element={< ProductsListPage/>} />
+            <Route exact path="/signin" element={<LoginPage />} />
             <Route exact path="/signup" element={<SignUpPage />} />
             <Route exact path="/update-password" element={<UpdatePasswordPage />} />
           </Routes>

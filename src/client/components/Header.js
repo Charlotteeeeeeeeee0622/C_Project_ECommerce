@@ -4,7 +4,7 @@ import { Layout, Menu } from "antd";
 
 const { Header } = Layout;
 
-const AppHeader = ({ isAuthenticated, logout }) => {
+const AppHeader = ({ isAuthenticated }) => {
   return (
     <Header>
       <Menu theme="dark" mode="horizontal" defaultSelectedKeys={["1"]}>
@@ -14,8 +14,8 @@ const AppHeader = ({ isAuthenticated, logout }) => {
         <Menu.Item key="2">
           <Link to="/products">Products</Link>
         </Menu.Item>
-        <Menu.Item key="3" onClick={logout}>
-          Logout
+        <Menu.Item key="3">
+          <Link to="/signin">Login</Link>
         </Menu.Item>
         {isAuthenticated ? (
           <Menu.Item key="4">

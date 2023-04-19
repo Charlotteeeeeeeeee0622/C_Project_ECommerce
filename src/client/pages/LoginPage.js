@@ -2,13 +2,18 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import AuthPage from './AuthPage';
 
+
+const axiosInstance = axios.create({
+  baseURL: 'http://localhost:3002'
+});
+
 const LoginPage = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   const handleSignIn = async (values) => {
     setIsLoading(true);
     try {
-      const response = await axios.post('/login', values);
+      const response = await axiosInstance.post('/signin', values);
 
       if (response.status === 200) {
         // Redirect to home page if login is successful

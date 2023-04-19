@@ -3,22 +3,30 @@ import axios from 'axios';
 import AuthPage from './AuthPage';
 import UpdatePasswordPage from './UpdatePasswordPage';
 
+const axiosInstance = axios.create({
+  baseURL: 'http://localhost:3002'
+});
+
 const SignUpPage = () => {
   const [isLoading, setIsLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
 
   const handleSignUp = async (values) => {
     setIsLoading(true);
+    setErrorMessage('');
     try {
-      const response = await axios.post('/signup', values);
+      const response = await axiosInstance.post('/signup', values);
 
       if (response.status === 201) {
         // Redirect to home page if sign-up is successful
         window.location.href = '/';
       } else {
         console.error('Sign up failed:', response.data.message);
+        setErrorMessage(response.data.message);
       }
     } catch (error) {
       console.error('Error signing up:', error);
+      setErrorMessage('Internal server error');
     } finally {
       setIsLoading(false);
     }
@@ -65,6 +73,7 @@ const SignUpPage = () => {
       formFields={formFields}
       onSubmit={handleSignUp}
       buttonText="Sign Up"
+      errorMessage={errorMessage}
       secondaryAction={
         <p>
           Already have an account? <a href="/login">Sign in here.</a>
