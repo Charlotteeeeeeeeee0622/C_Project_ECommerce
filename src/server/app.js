@@ -77,24 +77,6 @@ const userSchema = new mongoose.Schema({
 const User = mongoose.model('User', userSchema);
 
 
-// app.use('/', indexRouter);
-// app.use('/users', usersRouter);
-
-
-// // import login from '../server/views/login.ejs'
-// app.get('/login', (req, res) => {
-//   const message = req.flash('message');
-//   res.render('login', { message });
-// });
-
-
-// // catch 404 and forward to error handler
-// app.use(function(req, res, next) {
-//   next(createError(404));
-// });
-
-
-
 app.get('/', async (req, res) => {
   res.send('hellol world')
 })
@@ -228,6 +210,113 @@ app.put('/update-password', async (req, res) => {
 });
 
 
+// // Mock data for testing purposes
+// let products = [
+//   { id: 1, name: 'Product 1', category: 'Category 1', price: 9.99 },
+//   { id: 2, name: 'Product 2', category: 'Category 2', price: 19.99 },
+//   { id: 3, name: 'Product 3', category: 'Category 1', price: 14.99 },
+// ];
+
+// // List Products API
+// app.get('/products', (req, res) => {
+//   try {
+//     res.status(200).json(products);
+//   } catch (error) {
+//     console.error(error);
+//     res.status(500).json({ message: 'Internal Server Error' });
+//   }
+// });
+
+const Product = require('./models/Product'); // Import the Product model
+app.use('/uploads', express.static('uploads'));
+
+app.get('/products', async (req, res) => {
+  try {
+    const { search, category, sort } = req.query;
+
+    let filter = {};
+    if (category) {
+      filter.category = category;
+    }
+
+    let query = Product.find(filter);
+
+    if (search) {
+      query = query.where('productName').regex(new RegExp(search, 'i'));
+    }
+
+    if (sort) {
+      const sortOption = sort === 'price_asc' ? { price: 1 } : sort === 'price_desc' ? { price: -1 } : {};
+      query = query.sort(sortOption);
+    }
+
+    const products = await query.exec();
+    res.json(products);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Failed to fetch products' });
+  }
+});
+
+const multer = require('multer');
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, path.join(__dirname, 'uploads')); // set the destination folder for uploads
+  },
+  filename: (req, file, cb) => {
+    cb(null, Date.now() + '-' + file.originalname); // set the filename for the uploaded file
+  },
+});
+const upload = multer({ storage: storage });
+
+app.post('/products', upload.single('image'), async (req, res) => {
+  try {
+    // Update the field name to match the schema
+    console.log( JSON.stringify(req.body));
+    const productData = {
+      ...req.body,
+      imageLink: req.file ? `/uploads/${req.file.filename}` : '',
+    };
+
+    // Save the product data to the database using your Product model
+    const product = new Product(productData);
+    await product.save();
+
+    res.status(201).json({ message: 'Product created successfully', data: product });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Internal Server Error' });
+  }
+});
+
+// Edit Product API
+app.put('/products/:id', async (req, res) => {
+  try {
+    const productId = req.params.id;
+    const productUpdates = req.body;
+    await Product.findByIdAndUpdate(productId, productUpdates, { new: true });
+    res.status(200).json({ message: 'Product updated successfully' });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Failed to update product' });
+  }
+});
+
+// Get product detail
+app.get('/products/:productId', async (req, res) => {
+  const { productId } = req.params;
+
+  try {
+    const product = await Product.findById(productId);
+    if (!product) {
+      return res.status(404).json({ message: 'Product not found' });
+    }
+    res.json(product);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Error loading product details.' });
+  }
+});
 
 // // Start the server
 // const port = process.env.PORT || 3000;

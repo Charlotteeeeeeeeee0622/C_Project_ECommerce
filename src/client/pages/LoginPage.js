@@ -17,7 +17,7 @@ const LoginPage = () => {
 
       if (response.status === 200) {
         // Redirect to home page if login is successful
-        window.location.href = '/';
+        window.location.href = '/products';
       } else {
         console.error('Login failed:', response.data.message);
       }

@@ -9,6 +9,8 @@ import SignUpPage from './pages/SignUpPage';
 import UpdatePasswordPage from './pages/UpdatePasswordPage';
 import Home from './pages/Home'
 import ProductsListPage from './pages/ProductListPage';
+import ProductDetail from './pages/ProductDetailPage';
+// import CreateProduct from './pages/CreateProductForm';
 // import ProductsPage from './ProductsPage';
 // import axios from 'axios';
 
@@ -22,6 +24,8 @@ const App = () => {
         <Routes>
             <Route exact path="/" element={<Home />} />
             <Route exact path="/products" element={< ProductsListPage/>} />
+            {/* <Route exact path="/create" element={<CreateProduct/>}/> */}
+            <Route exact path="/products/:_id" element={<ProductDetail />} />
             <Route exact path="/signin" element={<LoginPage />} />
             <Route exact path="/signup" element={<SignUpPage />} />
             <Route exact path="/update-password" element={<UpdatePasswordPage />} />
