@@ -10,9 +10,8 @@ import UpdatePasswordPage from './pages/UpdatePasswordPage';
 import Home from './pages/Home'
 import ProductsListPage from './pages/ProductListPage';
 import ProductDetail from './pages/ProductDetailPage';
-// import CreateProduct from './pages/CreateProductForm';
-// import ProductsPage from './ProductsPage';
-// import axios from 'axios';
+import CheckoutModal from './pages/CheckingOut';
+import ShoppingCartModal from './pages/ShoppingCart';
 
 
 const App = () => {
